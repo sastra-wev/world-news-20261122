@@ -118,17 +118,49 @@ def draw_hero_art(img, box):
 
     # the globe: ocean disc and simple continent masses
     d.ellipse([gx - gr, gy - gr, gx + gr, gy + gr], fill=(38, 84, 138))
+    # subtle latitude/longitude grid, clipped to the globe disc and
+    # drawn before the continents so the land sits on top of it
+    grid_col = (64, 110, 164)  # slightly lighter blue than the ocean
+    grid_layer = Image.new("RGB", art.size, (38, 84, 138))
+    gd = ImageDraw.Draw(grid_layer)
+    for dy_frac, ry_frac in [(-0.45, 0.16), (0.0, 0.22), (0.45, 0.16)]:
+        dy = int(gr * dy_frac)  # horizontal (latitude) ellipse arcs
+        half = int(math.sqrt(max(gr * gr - dy * dy, 0)))
+        ry = int(gr * ry_frac)
+        gd.ellipse([gx - half, gy + dy - ry, gx + half, gy + dy + ry],
+                   outline=grid_col, width=1)
+    for dx_frac, rx_frac in [(-0.45, 0.16), (0.0, 0.22), (0.45, 0.16)]:
+        dx = int(gr * dx_frac)  # vertical (longitude) ellipse arcs
+        half = int(math.sqrt(max(gr * gr - dx * dx, 0)))
+        rx = int(gr * rx_frac)
+        gd.ellipse([gx + dx - rx, gy - half, gx + dx + rx, gy + half],
+                   outline=grid_col, width=1)
+    globe_mask = Image.new("L", art.size, 0)
+    ImageDraw.Draw(globe_mask).ellipse(
+        [gx - gr, gy - gr, gx + gr, gy + gr], fill=255)
+    art.paste(grid_layer, (0, 0), globe_mask)
+    d = ImageDraw.Draw(art)
     land = (74, 138, 84)
     d.polygon([(gx - 62, gy - 58), (gx - 18, gy - 74), (gx - 8, gy - 38),
                (gx - 30, gy - 6), (gx - 58, gy - 18)], fill=land)   # Americas N
     d.polygon([(gx - 34, gy + 2), (gx - 10, gy + 4), (gx - 16, gy + 40),
                (gx - 32, gy + 58), (gx - 42, gy + 26)], fill=land)  # Americas S
-    d.polygon([(gx + 6, gy - 66), (gx + 52, gy - 60), (gx + 66, gy - 30),
-               (gx + 34, gy - 22), (gx + 8, gy - 36)], fill=land)   # Eurasia
-    d.polygon([(gx + 14, gy - 12), (gx + 40, gy - 10), (gx + 44, gy + 18),
-               (gx + 24, gy + 34), (gx + 10, gy + 10)], fill=land)  # Africa
-    d.polygon([(gx + 48, gy + 26), (gx + 68, gy + 30), (gx + 62, gy + 50),
-               (gx + 46, gy + 44)], fill=land)                      # Australia
+    d.polygon([(gx + 4, gy - 68), (gx + 58, gy - 64), (gx + 78, gy - 34),
+               (gx + 72, gy - 18), (gx + 36, gy - 20),
+               (gx + 6, gy - 36)], fill=land)                      # Eurasia (wider right)
+    d.polygon([(gx + 16, gy - 14), (gx + 42, gy - 12), (gx + 48, gy + 16),
+               (gx + 36, gy + 38), (gx + 22, gy + 42),
+               (gx + 12, gy + 12)], fill=land)                     # Africa (more distinct)
+    d.polygon([(gx + 50, gy + 4), (gx + 58, gy + 6), (gx + 56, gy + 12),
+               (gx + 49, gy + 10)], fill=land)                     # SE Asia 1
+    d.polygon([(gx + 61, gy + 12), (gx + 68, gy + 14), (gx + 66, gy + 19),
+               (gx + 60, gy + 17)], fill=land)                     # SE Asia 2
+    d.polygon([(gx + 44, gy + 15), (gx + 50, gy + 16), (gx + 49, gy + 21),
+               (gx + 43, gy + 20)], fill=land)                     # SE Asia 3
+    d.polygon([(gx + 54, gy + 20), (gx + 60, gy + 21), (gx + 58, gy + 25),
+               (gx + 53, gy + 24)], fill=land)                     # SE Asia 4
+    d.polygon([(gx + 48, gy + 28), (gx + 68, gy + 32), (gx + 62, gy + 52),
+               (gx + 46, gy + 46)], fill=land)                     # Australia
     # heat tint creeping up from the bottom of the globe
     for i in range(int(gr * 0.9)):
         t = i / max(int(gr * 0.9) - 1, 1)
