@@ -6,10 +6,12 @@
 **The World in One Page** — the whole of Sunday 22 November 2026's world
 news summed up in a single 1024×1024 newspaper front page. The hero story
 is the COP31 climate summit in Antalya running into a second day of
-overtime, deadlocked over fossil fuels; alongside it, Iran's strike on a
-Bahrain industrial site and Mexico's capture of cartel boss "El Chapo
-Isidro" as illustrated panels, ten more numbered stories from every
-region, and a "day in numbers" strip.
+overtime, deadlocked over fossil fuels, drawn as the negotiating hall
+itself: delegates still at the long table, the wall clock near 2 a.m.,
+and the draft deal with its fossil-fuel line struck through in red.
+Alongside it, Iran's strike on a Bahrain industrial site and Mexico's
+capture of cartel boss "El Chapo Isidro" as illustrated panels, ten more
+numbered stories from every region, and a "day in numbers" strip.
 
 The page is drawn programmatically with PIL (`render.py`) from the day's
 verified reporting and committed as `entry.png`; `main.py` copies that
